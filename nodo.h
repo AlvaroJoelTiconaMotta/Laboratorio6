@@ -11,13 +11,12 @@ class Nodo{
     public:
         Nodo();
         Nodo( T nuevoDato);
-        Nodo(Nodo &);
+        Nodo(Nodo<T> &);
         ~Nodo();
         T getdato();
         Nodo<T>* getsiguiente ();
         void setdato (T dato);
         void setsiguiente(Nodo<T>* Nodo_siguiente);
-        
 };
 
 template <typename T>
@@ -33,7 +32,7 @@ Nodo<T>::Nodo( T nuevoDato){
 }
 
 template<typename T>
-Nodo<T>::Nodo(Nodo &nodo){
+Nodo<T>::Nodo(Nodo<T> &nodo){
     this->dato=nodo.dato;
     this->siguiente=nodo.siguiente;
 }

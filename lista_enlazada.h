@@ -1,61 +1,63 @@
+#ifndef LISTA_ENLAZADA_H
+#define LISTA_ENLAZADA_H
 #include "nodo.h"
+#include "punto.h"
 #include<iostream>
 using namespace std;
 template<typename T>
 class Lista_Enlazada{
 private:
     Nodo<T>* cabeza;
-    T size;
+    int size;
 public:
     Lista_Enlazada();
-    Lista_Enlazada(T valor);
-    Lista_Enlazada(Lista_Enlazada<T>& lista);
+    Lista_Enlazada(T);
+    Lista_Enlazada(Lista_Enlazada<T>&);
     ~Lista_Enlazada();
-    void insertarCabeza(T valor);
-    void insertarCola(T valor);
-    void insertarPos(T valor, int pos);
+    void insertarCabeza(T);
+    void insertarCola(T);
+    void insertarPos(T, int);
     void eliminarCabeza();
     void eliminarCola();
-    void eliminarPos(int pos);
+    void eliminarPos(int);
     void imprimir();
-    friend class <T>Iterador;
-};
-template<typename T>
-class Iterador{
-private:
-    Nodo<T>* retornar;
-public:
-    Iterador(Lista_Enlazada<T> lista);
-    ~Iterador();
-    Nodo<T> Begin(){
-        return retornar;
-    }
-    Nodo<T> End(){
-        while(retornar->getsiguiente()!=NULL){
-            retornar=retornar->getsiguiente();
-        }
-        return retornar->getsiguiente;
-    }
-    Nodo<T>* operator++(){
-        retornar=retornar->getsiguiente();
-        return retornar;
-    }
-    T operator*(){
-        return this->retornar->getdato;
-    }
-    void operator=(Iterador it){
-        this->retornar=it.retornar;
-    }
+    class Iterador {
+		friend class Lista_Enlazada;
+		private:
+			Nodo<T> *nodo;
+			Iterador(Nodo<T> *defecto){
+				nodo = defecto;
+			}
+		public:
+			Iterador(){	
+			}
+			bool operator == (const Iterador &it) const {
+				return nodo == it.nodo;
+			}
+			bool operator != (const Iterador &i) const {
+					return !(*this == i);
+			}	
+			Iterador &operator ++ (){
+					nodo = nodo->getsiguiente();
+					return *this;
+			}
+			Iterador &operator = (const Iterador &it) {
+				if (this != &it)
+					*nodo = *it.nodo;
+				return *this;
+			}
+			const T &operator * () const {
+				return nodo->getdato();
+			}
+		};
+		Iterador begin() const{ 
+			return Iterador(cabeza); 
+		}
+		Iterador end() const{ 
+			return NULL; 
+		}
 };
 
-template<typename T>
-Iterador<T>::Iterador(Lista_Enlazada<T> lista){
-    retornar=lista.cabeza;
-}
-
-template<typename T>
-Iterador<T>::~Iterador(){
-}
 template<typename T>
 Lista_Enlazada<T>::Lista_Enlazada(){
     cabeza=NULL;
@@ -68,24 +70,13 @@ Lista_Enlazada<T>::Lista_Enlazada(T valor){
 }
 
 template<typename T>
-Lista_Enlazada<T>::Lista_Enlazada(Lista_Enlazada<T>& lista){
-    cabeza = NULL; 
-    this->size = lista.size;
-    Nodo<T>* aux = NULL;
-    Nodo<T>* temp = lista.cabeza;
-    while (temp != NULL)
-    {
-        Nodo<T>* nodo_copia = new Nodo<T>;
-        nodo_copia->setdato(temp->getdato());
-        if(aux == NULL)
-            cabeza = nodo_copia;
-        else
-            aux->setsiguiente(nodo_copia);
-        aux = nodo_copia;
-        temp = aux->getsiguiente();
-    } 
+Lista_Enlazada<T>::Lista_Enlazada(Lista_Enlazada<T>& lista){ 
+    this->size=lista.size;
+    while(lista.cabeza!=NULL){
+        this->insertarCola((lista.cabeza)->getdato());
+        (lista.cabeza)=(lista.cabeza)->getsiguiente();
+    }
 }
-
 
 template<typename T>
 Lista_Enlazada<T>::~Lista_Enlazada(){
@@ -197,3 +188,4 @@ void Lista_Enlazada<T>::eliminarCola(){
         size--;
     }
 }
+#endif
